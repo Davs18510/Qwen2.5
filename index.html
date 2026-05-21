@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JoãoGPT - Seu Assistente Inteligente</title>
+    
+    <!-- Meta tags SEO -->
+    <meta name="description" content="Um clone moderno, responsivo e elegante do ChatGPT alimentado pelo modelo Qwen2.5 local via Ollama.">
+    <meta name="theme-color" content="#0e1117">
+
+    <!-- Google Fonts - Outfit & Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome para ícones premium -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Prism.js para realce de sintaxe em blocos de código -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+    
+    <!-- Nosso estilo CSS customizado -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app-container">
+        
+        <!-- BARRA LATERAL (HISTÓRICO DE CHAT) -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <button class="new-chat-btn" id="new-chat-btn">
+                    <i class="fa-solid fa-plus"></i>
+                    <span>Nova conversa</span>
+                </button>
+                <button class="sidebar-close-btn" id="sidebar-close-btn" title="Fechar menu">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            
+            <div class="chat-history-container">
+                <div class="history-label">Conversas Recentes</div>
+                <ul class="chat-list" id="chat-list">
+                    <!-- Gerado dinamicamente via JS -->
+                </ul>
+            </div>
+            
+            <div class="sidebar-footer">
+                <button class="footer-btn" id="open-settings-btn">
+                    <i class="fa-solid fa-gear"></i>
+                    <span>Configurações</span>
+                </button>
+                <div class="user-profile">
+                    <div class="user-avatar">
+                        <i class="fa-solid fa-user"></i>
+                    </div>
+                    <div class="user-info">
+                        <span class="user-name">Usuário Local</span>
+                        <span class="user-status">Qwen 2.5:0.5b</span>
+                    </div>
+                </div>
+            </div>
+        </aside>
+        
+        <!-- CONTEÚDO PRINCIPAL (ÁREA DE CONVERSA) -->
+        <main class="main-content">
+            <!-- Barra superior -->
+            <header class="top-bar">
+                <div class="top-bar-left">
+                    <button class="menu-toggle-btn" id="menu-toggle-btn" title="Abrir menu">
+                        <i class="fa-solid fa-bars"></i>
+                    </button>
+                    <div class="model-badge-container">
+                        <span class="model-badge" id="active-model-badge">qwen2.5:0.5b</span>
+                        <span class="model-status-dot"></span>
+                    </div>
+                </div>
+                
+                <div class="top-bar-right">
+                    <button class="action-btn" id="clear-chat-btn" title="Limpar conversa atual">
+                        <i class="fa-solid fa-trash-can"></i>
+                    </button>
+                </div>
+            </header>
+            
+            <!-- Janela de Chat -->
+            <section class="chat-window" id="chat-window">
+                
+                <!-- TELA DE BOAS-VINDAS (Quando o chat está vazio) -->
+                <div class="welcome-screen" id="welcome-screen">
+                    <div class="welcome-logo-container">
+                        <div class="welcome-logo">
+                            <i class="fa-solid fa-robot"></i>
+                        </div>
+                    </div>
+                    
+                    <h1 class="welcome-title">Como posso ajudar hoje?</h1>
+                    <p class="welcome-subtitle">Sou o João, seu assistente inteligente baseado no Qwen2.5.</p>
+                    
+                    <!-- Cards de Sugestão Rápida -->
+                    <div class="suggestion-grid">
+                        <div class="suggestion-card" data-prompt="Crie um script em Python para ler um arquivo CSV e exibir a média de uma coluna.">
+                            <div class="card-icon"><i class="fa-brands fa-python"></i></div>
+                            <div class="card-content">
+                                <h3>Script Python</h3>
+                                <p>Escrever código para processar CSV</p>
+                            </div>
+                        </div>
+                        <div class="suggestion-card" data-prompt="Me ajude a planejar uma viagem de 3 dias para uma praia tranquila no Brasil.">
+                            <div class="card-icon"><i class="fa-solid fa-compass"></i></div>
+                            <div class="card-content">
+                                <h3>Roteiro de Viagem</h3>
+                                <p>Planejar 3 dias em uma praia</p>
+                            </div>
+                        </div>
+                        <div class="suggestion-card" data-prompt="Explique de forma simples o que é computação quântica e dê um exemplo do dia a dia.">
+                            <div class="card-icon"><i class="fa-solid fa-brain"></i></div>
+                            <div class="card-content">
+                                <h3>Computação Quântica</h3>
+                                <p>Explicar de forma extremamente simples</p>
+                            </div>
+                        </div>
+                        <div class="suggestion-card" data-prompt="Escreva um e-mail formal e profissional solicitando o adiamento de uma reunião de entrega.">
+                            <div class="card-icon"><i class="fa-solid fa-envelope"></i></div>
+                            <div class="card-content">
+                                <h3>E-mail Profissional</h3>
+                                <p>Adiar uma reunião de entrega</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- MENSAGENS (Geradas Dinamicamente) -->
+                <div class="messages-container" id="messages-container" style="display: none;">
+                    <!-- Exemplo de estrutura das mensagens (será preenchido dinamicamente pelo JS) -->
+                </div>
+                
+                <!-- Indicador de Digitação do Assistente -->
+                <div class="typing-indicator-container" id="typing-indicator-container" style="display: none;">
+                    <div class="message-row assistant">
+                        <div class="avatar assistant-avatar">
+                            <i class="fa-solid fa-robot"></i>
+                        </div>
+                        <div class="message-bubble typing-bubble">
+                            <div class="typing-dots">
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Área de entrada do input -->
+            <footer class="input-area">
+                <div class="input-wrapper">
+                    <form id="chat-form">
+                        <textarea 
+                            id="user-input" 
+                            rows="1" 
+                            placeholder="Pergunte ao João..." 
+                            required
+                        ></textarea>
+                        <button type="submit" id="send-btn" disabled title="Enviar mensagem">
+                            <i class="fa-solid fa-arrow-up"></i>
+                        </button>
+                    </form>
+                </div>
+                <p class="disclaimer">JoãoGPT pode cometer erros. Verifique informações importantes.</p>
+            </footer>
+        </main>
+    </div>
+    
+    <!-- MODAL DE CONFIGURAÇÕES -->
+    <div class="modal-overlay" id="settings-modal" style="display: none;">
+        <div class="modal-container">
+            <div class="modal-header">
+                <h2>Configurações do Sistema</h2>
+                <button class="modal-close-btn" id="close-settings-btn">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            
+            <div class="modal-body">
+                <div class="setting-group">
+                    <label for="system-instruction">Instrução do Sistema (Personalidade)</label>
+                    <textarea id="system-instruction" rows="2" placeholder="Ex: Seu nome é joão e você é muito prestativo."></textarea>
+                    <small>Define as diretrizes iniciais de comportamento do chatbot.</small>
+                </div>
+                
+                <div class="setting-group">
+                    <label for="model-select">Modelo do Ollama</label>
+                    <select id="model-select">
+                        <option value="qwen2.5:0.5b">qwen2.5:0.5b (Padrão)</option>
+                        <!-- Outros carregados dinamicamente -->
+                    </select>
+                    <small>Selecione o modelo do seu Ollama local.</small>
+                </div>
+
+                <!-- NOVAS CONFIGURAÇÕES DE API PARA GITHUB PAGES -->
+                <div class="setting-group">
+                    <label for="api-type">Origem da API de Chat</label>
+                    <select id="api-type">
+                        <option value="flask">Servidor Flask Local (Porta 5000)</option>
+                        <option value="ollama">Ollama Local Direto (Porta 11434)</option>
+                        <option value="custom">URL de API Customizada (Nuvem / Proxy)</option>
+                    </select>
+                    <small>Escolha como a página se comunicará com o modelo.</small>
+                </div>
+
+                <div class="setting-group" id="custom-api-wrapper" style="display: none;">
+                    <label for="custom-api-url">URL da API Customizada</label>
+                    <input type="text" id="custom-api-url" placeholder="Ex: https://meuservidor.render.com/api/chat">
+                    <small>Informe o endpoint HTTPS completo para chamadas de chat.</small>
+                </div>
+                
+                <div class="setting-group reset-group">
+                    <label>Ações do Histórico</label>
+                    <button class="danger-btn" id="reset-all-btn">
+                        <i class="fa-solid fa-trash-arrow-up"></i> Apagar Todo o Histórico
+                    </button>
+                    <small>Isso apagará permanentemente todos os chats no navegador.</small>
+                </div>
+            </div>
+            
+            <div class="modal-footer">
+                <button class="save-settings-btn" id="save-settings-btn">Salvar Alterações</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- SCRIPTS EXTERNOS -->
+    <!-- Marked.js para interpretar Markdown com segurança -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    
+    <!-- Prism.js para colorização de códigos (Syntax Highlighting) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <!-- Componentes de linguagens mais comuns no Prism -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-css.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+    
+    <!-- Nosso script JS principal -->
+    <script src="script.js"></script>
+</body>
+</html>
